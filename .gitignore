@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# SQLite
+*.db
+*.sqlite
+
+# Audio uploads (never commit)
+uploads/
+
+# PDF output
+pdfs/
+
+# Docker
+.dockerignore

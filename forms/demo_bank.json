@@ -1,0 +1,216 @@
+{
+  "bank_id": "demo_bank",
+  "bank_name_en": "Demo Bank",
+  "bank_name_ta": "டெமோ வங்கி",
+  "form_title_en": "Savings Account Opening Form",
+  "form_title_ta": "சேமிப்பு கணக்கு திறப்பு படிவம்",
+  "fields": [
+    {
+      "id": "full_name",
+      "label_en": "Full Name",
+      "label_ta": "முழு பெயர்",
+      "type": "text",
+      "required": true,
+      "options": null,
+      "help_en": "Your full name as it appears on your ID proof. First name, middle name if any, and last name.",
+      "help_ta": "உங்கள் அடையாள ஆவணத்தில் உள்ள முழு பெயர். முதல் பெயர், நடுப்பெயர் இருந்தால், மற்றும் கடைசி பெயர்.",
+      "validation": {
+        "rule": "name",
+        "min_length": 2,
+        "max_length": 100
+      }
+    },
+    {
+      "id": "father_or_spouse_name",
+      "label_en": "Father's / Spouse's Name",
+      "label_ta": "தந்தை / கணவர் அல்லது மனைவி பெயர்",
+      "type": "text",
+      "required": true,
+      "options": null,
+      "help_en": "Your father's name, or if married, your husband's or wife's name.",
+      "help_ta": "உங்கள் தந்தையின் பெயர், அல்லது திருமணம் ஆகியிருந்தால் உங்கள் கணவர் அல்லது மனைவியின் பெயர்.",
+      "validation": {
+        "rule": "name",
+        "min_length": 2,
+        "max_length": 100
+      }
+    },
+    {
+      "id": "date_of_birth",
+      "label_en": "Date of Birth",
+      "label_ta": "பிறந்த தேதி",
+      "type": "date",
+      "required": true,
+      "options": null,
+      "help_en": "The date you were born, in day-month-year format. For example, 15-03-1990.",
+      "help_ta": "நீங்கள் பிறந்த தேதி, நாள்-மாதம்-ஆண்டு வடிவத்தில். உதாரணமாக, 15-03-1990.",
+      "validation": {
+        "rule": "date",
+        "format": "DD-MM-YYYY",
+        "min_age": 18,
+        "max_age": 120
+      }
+    },
+    {
+      "id": "gender",
+      "label_en": "Gender",
+      "label_ta": "பாலினம்",
+      "type": "select",
+      "required": true,
+      "options": [
+        {"value": "male", "label_en": "Male", "label_ta": "ஆண்"},
+        {"value": "female", "label_en": "Female", "label_ta": "பெண்"},
+        {"value": "other", "label_en": "Other", "label_ta": "மற்றவை"}
+      ],
+      "help_en": "Select your gender: male, female, or other.",
+      "help_ta": "உங்கள் பாலினத்தைத் தேர்ந்தெடுக்கவும்: ஆண், பெண், அல்லது மற்றவை.",
+      "validation": {
+        "rule": "select",
+        "allowed": ["male", "female", "other"]
+      }
+    },
+    {
+      "id": "mobile_number",
+      "label_en": "Mobile Number",
+      "label_ta": "கைபேசி எண்",
+      "type": "phone",
+      "required": true,
+      "options": null,
+      "help_en": "Your 10-digit Indian mobile number. It should start with 6, 7, 8, or 9.",
+      "help_ta": "உங்கள் 10 இலக்க இந்திய கைபேசி எண். இது 6, 7, 8 அல்லது 9 இல் தொடங்க வேண்டும்.",
+      "validation": {
+        "rule": "phone",
+        "pattern": "^[6-9]\\d{9}$"
+      }
+    },
+    {
+      "id": "address",
+      "label_en": "Residential Address",
+      "label_ta": "வீட்டு முகவரி",
+      "type": "text",
+      "required": true,
+      "options": null,
+      "help_en": "Your full home address where you currently live. Include house number, street, village or city, district, state, and pin code.",
+      "help_ta": "நீங்கள் தற்போது வசிக்கும் முழு வீட்டு முகவரி. வீட்டு எண், தெரு, கிராமம் அல்லது நகரம், மாவட்டம், மாநிலம் மற்றும் அஞ்சல் குறியீடு.",
+      "validation": {
+        "rule": "text",
+        "min_length": 10,
+        "max_length": 300
+      }
+    },
+    {
+      "id": "occupation",
+      "label_en": "Occupation",
+      "label_ta": "தொழில்",
+      "type": "text",
+      "required": false,
+      "options": null,
+      "help_en": "What work do you do? For example: farmer, teacher, shopkeeper, homemaker, student, daily wage worker.",
+      "help_ta": "நீங்கள் என்ன வேலை செய்கிறீர்கள்? உதாரணமாக: விவசாயி, ஆசிரியர், கடைக்காரர், இல்லத்தரசி, மாணவர், தினக்கூலி தொழிலாளி.",
+      "validation": {
+        "rule": "text",
+        "min_length": 2,
+        "max_length": 100
+      }
+    },
+    {
+      "id": "annual_income",
+      "label_en": "Annual Income Range",
+      "label_ta": "ஆண்டு வருமான வரம்பு",
+      "type": "select",
+      "required": false,
+      "options": [
+        {"value": "below_1l", "label_en": "Below ₹1,00,000", "label_ta": "₹1,00,000-க்கு கீழ்"},
+        {"value": "1l_to_5l", "label_en": "₹1,00,000 – ₹5,00,000", "label_ta": "₹1,00,000 – ₹5,00,000"},
+        {"value": "5l_to_10l", "label_en": "₹5,00,000 – ₹10,00,000", "label_ta": "₹5,00,000 – ₹10,00,000"},
+        {"value": "above_10l", "label_en": "Above ₹10,00,000", "label_ta": "₹10,00,000-க்கு மேல்"}
+      ],
+      "help_en": "How much money do you earn in one year, roughly? Pick the closest range.",
+      "help_ta": "ஒரு வருடத்தில் தோராயமாக எவ்வளவு சம்பாதிக்கிறீர்கள்? நெருக்கமான வரம்பைத் தேர்ந்தெடுக்கவும்.",
+      "validation": {
+        "rule": "select",
+        "allowed": ["below_1l", "1l_to_5l", "5l_to_10l", "above_10l"]
+      }
+    },
+    {
+      "id": "nominee_name",
+      "label_en": "Nominee Name",
+      "label_ta": "நாமினி பெயர்",
+      "type": "text",
+      "required": false,
+      "options": null,
+      "help_en": "A nominee is someone who will receive your money if something happens to you. Write their full name.",
+      "help_ta": "நாமினி என்பது உங்களுக்கு ஏதாவது நேர்ந்தால் உங்கள் பணத்தைப் பெறும் நபர். அவர்களின் முழு பெயரை எழுதுங்கள்.",
+      "validation": {
+        "rule": "name",
+        "min_length": 2,
+        "max_length": 100
+      }
+    },
+    {
+      "id": "nominee_relationship",
+      "label_en": "Nominee Relationship",
+      "label_ta": "நாமினி உறவு",
+      "type": "text",
+      "required": false,
+      "options": null,
+      "help_en": "How is the nominee related to you? For example: wife, husband, son, daughter, father, mother, brother, sister.",
+      "help_ta": "நாமினி உங்களுக்கு எப்படி உறவினர்? உதாரணமாக: மனைவி, கணவர், மகன், மகள், தந்தை, தாய், சகோதரன், சகோதரி.",
+      "validation": {
+        "rule": "text",
+        "min_length": 2,
+        "max_length": 50
+      }
+    },
+    {
+      "id": "account_type",
+      "label_en": "Account Type",
+      "label_ta": "கணக்கு வகை",
+      "type": "select",
+      "required": true,
+      "options": [
+        {"value": "savings", "label_en": "Savings Account", "label_ta": "சேமிப்பு கணக்கு"}
+      ],
+      "help_en": "The type of bank account. For this form, it is a savings account where you can save your money safely.",
+      "help_ta": "வங்கிக் கணக்கின் வகை. இந்த படிவத்திற்கு, இது உங்கள் பணத்தை பாதுகாப்பாக சேமிக்கும் சேமிப்பு கணக்கு.",
+      "validation": {
+        "rule": "select",
+        "allowed": ["savings"]
+      }
+    },
+    {
+      "id": "id_proof_type",
+      "label_en": "ID Proof Attached",
+      "label_ta": "இணைக்கப்பட்ட அடையாள ஆவணம்",
+      "type": "choice",
+      "required": true,
+      "options": [
+        {"value": "aadhaar", "label_en": "Aadhaar Card", "label_ta": "ஆதார் அட்டை"},
+        {"value": "voter_id", "label_en": "Voter ID", "label_ta": "வாக்காளர் அடையாள அட்டை"},
+        {"value": "driving_licence", "label_en": "Driving Licence", "label_ta": "ஓட்டுநர் உரிமம்"},
+        {"value": "other", "label_en": "Other", "label_ta": "மற்றவை"}
+      ],
+      "help_en": "Which ID proof document are you attaching as a photocopy? Just tick one. You do NOT need to write any number here.",
+      "help_ta": "எந்த அடையாள ஆவணத்தின் நகலை இணைக்கிறீர்கள்? ஒன்றை டிக் செய்யுங்கள். இங்கே எண் எழுத வேண்டாம்.",
+      "validation": {
+        "rule": "select",
+        "allowed": ["aadhaar", "voter_id", "driving_licence", "other"]
+      }
+    },
+    {
+      "id": "initial_deposit",
+      "label_en": "Initial Deposit Amount (₹)",
+      "label_ta": "ஆரம்ப வைப்புத் தொகை (₹)",
+      "type": "text",
+      "required": false,
+      "options": null,
+      "help_en": "How much money do you want to put in the account today when you open it? Write the amount in rupees.",
+      "help_ta": "கணக்கைத் திறக்கும் போது இன்று எவ்வளவு பணம் போட விரும்புகிறீர்கள்? ரூபாயில் தொகையை எழுதுங்கள்.",
+      "validation": {
+        "rule": "text",
+        "min_length": 1,
+        "max_length": 20
+      }
+    }
+  ]
+}
