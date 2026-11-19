@@ -6,10 +6,12 @@ A voice-powered AI assistant for bank account opening forms.
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from .config import get_settings
 from .routes import fill, form
@@ -83,3 +85,22 @@ app.include_router(fill.router)
 async def health_check() -> dict[str, str]:
     """Simple health check endpoint."""
     return {"status": "ok", "service": "FormSaathi"}
+
+
+# ---------------------------------------------------------------------------
+# Serve frontend static files (production: built React app)
+# ---------------------------------------------------------------------------
+
+_FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
+
+if _FRONTEND_DIR.is_dir():
+    app.mount("/assets", StaticFiles(directory=_FRONTEND_DIR / "assets"), name="assets") \
+        if (_FRONTEND_DIR / "assets").is_dir() else None
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_frontend(full_path: str) -> FileResponse:
+        """Serve the React SPA — all non-API routes fall through to index.html."""
+        file_path = _FRONTEND_DIR / full_path
+        if full_path and file_path.is_file():
+            return FileResponse(file_path)
+        return FileResponse(_FRONTEND_DIR / "index.html")
