@@ -8,7 +8,7 @@ from fastapi import APIRouter, HTTPException, status
 
 from ..config import get_settings
 from ..form_loader import FormLoadError, list_available_banks, load_form_config
-from ..models import FormConfig
+from ..models import ErrorResponse, FormConfig
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["form"])
@@ -19,7 +19,7 @@ router = APIRouter(prefix="/api", tags=["form"])
     response_model=FormConfig,
     summary="Get form field configuration for a bank",
     responses={
-        404: {"description": "Bank form not found"},
+        404: {"model": ErrorResponse, "description": "Bank form not found"},
     },
 )
 async def get_form_config(bank_id: str) -> FormConfig:
@@ -27,6 +27,15 @@ async def get_form_config(bank_id: str) -> FormConfig:
 
     The frontend uses this to render the form dynamically.
     Adding a new bank only requires a new JSON file in the ``forms/`` directory.
+
+    Args:
+        bank_id: Unique bank identifier string.
+
+    Returns:
+        FormConfig containing all form fields and metadata.
+
+    Raises:
+        HTTPException: If the bank form configuration file cannot be found.
     """
     settings = get_settings()
     try:
@@ -44,6 +53,10 @@ async def get_form_config(bank_id: str) -> FormConfig:
     summary="List available bank form IDs",
 )
 async def list_forms() -> list[str]:
-    """Return a list of all available bank form IDs."""
+    """Return a list of all available bank form IDs.
+
+    Returns:
+        List of bank IDs available in the forms directory.
+    """
     settings = get_settings()
     return list_available_banks(settings.forms_dir)

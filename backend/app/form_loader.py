@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from functools import lru_cache
+from typing import Any
 
 from .models import FormConfig
 
@@ -21,7 +21,14 @@ class FormLoadError(Exception):
 
 
 def _resolve_forms_dir(forms_dir: str) -> Path:
-    """Resolve the forms directory path relative to the project root."""
+    """Resolve the forms directory path relative to the project root.
+
+    Args:
+        forms_dir: Directory path as string.
+
+    Returns:
+        Resolved Path object pointing to the forms directory.
+    """
     path = Path(forms_dir)
     if path.is_absolute() and path.is_dir():
         return path
@@ -36,6 +43,58 @@ def _resolve_forms_dir(forms_dir: str) -> Path:
     if cwd_candidate.is_dir():
         return cwd_candidate
     return candidate
+
+
+def _read_form_json(file_path: Path) -> dict[str, Any]:
+    """Read and decode JSON content from a form file.
+
+    Args:
+        file_path: Path to the JSON form configuration file.
+
+    Returns:
+        Decoded JSON dictionary.
+
+    Raises:
+        FormLoadError: If the file cannot be read or contains invalid JSON.
+    """
+    try:
+        raw = file_path.read_text(encoding="utf-8")
+        data: dict[str, Any] = json.loads(raw)
+        return data
+    except (OSError, json.JSONDecodeError) as exc:
+        raise FormLoadError(f"Cannot read form config {file_path}: {exc}") from exc
+
+
+def _validate_bank_config(
+    data: dict[str, Any],
+    bank_id: str,
+    file_path: Path,
+) -> FormConfig:
+    """Validate raw form data against the Pydantic schema.
+
+    Args:
+        data: Parsed JSON data dictionary.
+        bank_id: Expected bank identifier.
+        file_path: Path to the form file (for error reporting).
+
+    Returns:
+        Validated FormConfig model.
+
+    Raises:
+        FormLoadError: If validation fails or bank_id does not match.
+    """
+    try:
+        config = FormConfig.model_validate(data)
+    except Exception as exc:
+        raise FormLoadError(f"Invalid form config in {file_path}: {exc}") from exc
+
+    if config.bank_id != bank_id:
+        raise FormLoadError(
+            f"bank_id mismatch: file says '{config.bank_id}', "
+            f"but requested '{bank_id}'."
+        )
+
+    return config
 
 
 def load_form_config(bank_id: str, forms_dir: str = "forms") -> FormConfig:
@@ -60,25 +119,8 @@ def load_form_config(bank_id: str, forms_dir: str = "forms") -> FormConfig:
             f"Available banks: {list_available_banks(forms_dir)}"
         )
 
-    try:
-        raw = file_path.read_text(encoding="utf-8")
-        data = json.loads(raw)
-    except (OSError, json.JSONDecodeError) as exc:
-        raise FormLoadError(f"Cannot read form config {file_path}: {exc}") from exc
-
-    try:
-        config = FormConfig.model_validate(data)
-    except Exception as exc:
-        raise FormLoadError(
-            f"Invalid form config in {file_path}: {exc}"
-        ) from exc
-
-    # Sanity check: bank_id in the file must match the requested one
-    if config.bank_id != bank_id:
-        raise FormLoadError(
-            f"bank_id mismatch: file says '{config.bank_id}', "
-            f"but requested '{bank_id}'."
-        )
+    data = _read_form_json(file_path)
+    config = _validate_bank_config(data, bank_id, file_path)
 
     logger.info("Loaded form config for bank '%s' with %d fields.", bank_id, len(config.fields))
     return config
@@ -86,6 +128,9 @@ def load_form_config(bank_id: str, forms_dir: str = "forms") -> FormConfig:
 
 def list_available_banks(forms_dir: str = "forms") -> list[str]:
     """List all available bank IDs from the forms directory.
+
+    Args:
+        forms_dir: Directory containing form JSON files.
 
     Returns:
         A list of bank_id strings (file stems of .json files).

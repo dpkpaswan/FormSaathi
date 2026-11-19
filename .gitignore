@@ -49,3 +49,5 @@ pdfs/
 
 # Docker
 .dockerignore
+
+.vercel

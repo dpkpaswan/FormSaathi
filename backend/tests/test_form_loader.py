@@ -4,20 +4,24 @@ from __future__ import annotations
 
 import json
 import tempfile
+from collections.abc import Generator
 from pathlib import Path
 
 import pytest
 
-from backend.app.form_loader import FormLoadError, load_form_config, list_available_banks
+from backend.app.form_loader import (
+    FormLoadError,
+    list_available_banks,
+    load_form_config,
+)
 from backend.app.models import FormConfig
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
 
 @pytest.fixture
-def sample_form_data() -> dict:
+def sample_form_data() -> dict[str, object]:
     """Return a minimal valid form config dict."""
     return {
         "bank_id": "test_bank",
@@ -42,7 +46,7 @@ def sample_form_data() -> dict:
 
 
 @pytest.fixture
-def temp_forms_dir(sample_form_data: dict) -> Path:
+def temp_forms_dir(sample_form_data: dict[str, object]) -> Generator[Path, None, None]:
     """Create a temporary forms directory with a test form JSON."""
     with tempfile.TemporaryDirectory() as tmpdir:
         path = Path(tmpdir)
@@ -92,7 +96,7 @@ class TestLoadFormConfig:
     def test_bank_id_mismatch_raises_error(self, temp_forms_dir: Path) -> None:
         """If file bank_id doesn't match requested ID, raise FormLoadError."""
         mismatch = temp_forms_dir / "wrong_bank.json"
-        data = {
+        data: dict[str, object] = {
             "bank_id": "actually_different",
             "bank_name_en": "X",
             "bank_name_ta": "X",

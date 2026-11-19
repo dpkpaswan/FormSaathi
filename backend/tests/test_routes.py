@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -10,7 +9,6 @@ from fastapi.testclient import TestClient
 
 from backend.app.main import app
 from backend.app.models import Confidence, ExtractedField, FillResponse
-
 
 client = TestClient(app)
 

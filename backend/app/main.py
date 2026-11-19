@@ -61,8 +61,16 @@ app.add_middleware(
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    """Catch unhandled exceptions and return a clean error response."""
-    logger.exception("Unhandled exception on %s %s", request.method, request.url.path)
+    """Catch unhandled exceptions and return a clean error response.
+
+    Args:
+        request: The incoming FastAPI request.
+        exc: The unhandled exception.
+
+    Returns:
+        JSONResponse with a standardized detail message and status 500.
+    """
+    logger.exception("Unhandled exception on %s %s: %s", request.method, request.url.path, exc)
     return JSONResponse(
         status_code=500,
         content={"detail": "An internal error occurred. Please try again."},
@@ -83,7 +91,11 @@ app.include_router(fill.router)
 
 @app.get("/api/health", tags=["health"])
 async def health_check() -> dict[str, str]:
-    """Simple health check endpoint."""
+    """Return health status of the API service.
+
+    Returns:
+        Dictionary confirming service status.
+    """
     return {"status": "ok", "service": "FormSaathi"}
 
 
@@ -92,15 +104,25 @@ async def health_check() -> dict[str, str]:
 # ---------------------------------------------------------------------------
 
 _FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
+if not _FRONTEND_DIR.is_dir():
+    _FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "public"
 
-if _FRONTEND_DIR.is_dir():
-    app.mount("/assets", StaticFiles(directory=_FRONTEND_DIR / "assets"), name="assets") \
-        if (_FRONTEND_DIR / "assets").is_dir() else None
+_ASSETS_DIR = _FRONTEND_DIR / "assets"
+if _ASSETS_DIR.is_dir():
+    app.mount("/assets", StaticFiles(directory=_ASSETS_DIR), name="assets")
 
-    @app.get("/{full_path:path}", include_in_schema=False)
-    async def serve_frontend(full_path: str) -> FileResponse:
-        """Serve the React SPA — all non-API routes fall through to index.html."""
-        file_path = _FRONTEND_DIR / full_path
-        if full_path and file_path.is_file():
-            return FileResponse(file_path)
-        return FileResponse(_FRONTEND_DIR / "index.html")
+
+@app.get("/{full_path:path}", include_in_schema=False)
+async def serve_frontend(full_path: str) -> FileResponse:
+    """Serve the React SPA — all non-API routes fall through to index.html.
+
+    Args:
+        full_path: The requested path within the frontend SPA.
+
+    Returns:
+        FileResponse of the static file or index.html fallback.
+    """
+    file_path = _FRONTEND_DIR / full_path
+    if full_path and file_path.is_file():
+        return FileResponse(file_path)
+    return FileResponse(_FRONTEND_DIR / "index.html")
