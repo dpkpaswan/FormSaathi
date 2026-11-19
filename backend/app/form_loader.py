@@ -23,11 +23,19 @@ class FormLoadError(Exception):
 def _resolve_forms_dir(forms_dir: str) -> Path:
     """Resolve the forms directory path relative to the project root."""
     path = Path(forms_dir)
-    if not path.is_absolute():
-        # Resolve relative to the project root (two levels up from this file)
-        project_root = Path(__file__).resolve().parent.parent.parent
-        path = project_root / forms_dir
-    return path
+    if path.is_absolute() and path.is_dir():
+        return path
+    if path.is_dir():
+        return path.resolve()
+    # Resolve relative to the project root (two levels up from this file)
+    project_root = Path(__file__).resolve().parent.parent.parent
+    candidate = project_root / forms_dir
+    if candidate.is_dir():
+        return candidate
+    cwd_candidate = Path.cwd() / forms_dir
+    if cwd_candidate.is_dir():
+        return cwd_candidate
+    return candidate
 
 
 def load_form_config(bank_id: str, forms_dir: str = "forms") -> FormConfig:
