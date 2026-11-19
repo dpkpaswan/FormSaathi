@@ -4,6 +4,16 @@ version = "0.1.0"
 description = "AI voice assistant for bank account opening forms"
 requires-python = ">=3.12"
 license = { text = "MIT" }
+dependencies = [
+    "fastapi>=0.115.0,<1.0",
+    "uvicorn[standard]>=0.30.0,<1.0",
+    "pydantic>=2.0,<3.0",
+    "pydantic-settings>=2.0,<3.0",
+    "google-genai>=1.0.0",
+    "python-multipart>=0.0.9",
+    "reportlab>=4.0",
+    "requests>=2.31"
+]
 
 [tool.pytest.ini_options]
 testpaths = ["backend/tests"]
